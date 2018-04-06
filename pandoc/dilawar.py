@@ -66,10 +66,13 @@ def tikz2image(tikz_src, filetype, outfile):
     olddir = os.getcwd()
     os.chdir(tmpdir)
 
-    # Write tikz.tex file.
-    with open('tikz.tex', 'w') as f:
-        f.write( '\n'.join( 
-            [ "\\RequirePackage{luatex85,shellesc}"
+    basename = get_filename4code("tikz", tikz_src)
+    texfile = os.path.join( tmpdir, basename + '.tex' )
+    pdffile = os.path.join( tmpdir, basename + '.pdf' )
+
+    pre, post, text = [], [], []
+    if r'\documentclass' not in tikz_src:
+        pre = [ "\\RequirePackage{luatex85,shellesc}"
                 , "\\documentclass{standalone}"
                 , "\\usepackage{tikz}"
                 , "\\usepackage[sfdefault]{firasans}"
@@ -77,31 +80,36 @@ def tikz2image(tikz_src, filetype, outfile):
                 , "\\usepackage{pgfplots}"
                 , "\\pgfplotslibrary[]{units,groupplots}"
                 , "\\begin{document}" ] 
-            ))
-        f.write(tikz_src)
-        f.write("\n\\end{document}\n")
+        post = [ "\\end{document}" ]
 
-    subprocess.call( ["latexmk", "-pdf", "-lualatex", '--shell-escape', '-silent', 'tikz.tex']
-            , stdout=sys.stderr
-            )
+    with open( texfile, 'w') as f:
+        log( 'Writing', tikz_src )
+        f.write( '\n'.join( pre + [ tikz_src ] + post ) )
+
+    helper.run( 'latexmk -pdf -lualatex --shell-escape %s' % texfile )
     os.chdir(olddir)
     if filetype == 'pdf':
-        shutil.copyfile(tmpdir + '/tikz.pdf', outfile + '.pdf')
+        shutil.copyfile(pdffile, os.path.join(olddir, basename + '.pdf'))
     else:
-        call(["convert", tmpdir + '/tikz.pdf', outfile + '.' + filetype])
+        subprocess.call(["convert", pdffile, os.path.join(olddir, basename+'.png')])
     shutil.rmtree(tmpdir)
+
+def tikz_code_to_image( code, format ):
+    if not os.path.isfile(src):
+        try:
+            src = tikz2image(code, filetype )
+            log('Created image ' + src )
+            return src
+        except Exception as e:
+            log( "Failed to create image", e )
+            return 'FAILED'
 
 def tikz(key, value, format, _):
     if key == 'RawBlock':
         [fmt, code] = value
         if fmt == "latex" and re.match( r'\begin{tikzpicture}', code):
-            outfile = get_filename4code("tikz", code)
-            filetype = get_extension(format, "png", html="png", latex="pdf")
-            src = outfile + '.' + filetype
-            if not os.path.isfile(src):
-                tikz2image(code, filetype, outfile)
-                log('Created image ' + src )
-            return Para([Image(['', [], []], [], [src, ""])])
+            path = tikz_code_to_image( code, format )
+            return Para([Image(['', [], []], [], [path, ""])])
 
 def comment(k, v, fmt, meta):
     global incomment
@@ -127,10 +135,24 @@ def image_with_url( k, v, fmt, meta ):
             v[2][0] = path
             return Image( *v )
 
+def image_with_standalone( k, v, fmt, meta ):
+    if k == 'Image':
+        desc = v[2][0]
+        if r'\documentclass' in desc:
+            code = desc
+            outfile = get_filename4code("tikz", code)
+            filetype = get_extension(format, "png", html="png", latex="pdf")
+            src = outfile + '.' + filetype
+            if not os.path.isfile(src):
+                tikz2image(code, filetype, outfile)
+                log('Created image ' + src )
+            return Para([Image(['', [], []], [], [src, ""])])
+
 if __name__ == "__main__":
     toJSONFilters( 
         [ 
-            image_with_url, comment, theorem.theorems
+            image_with_url, image_with_standalone
+            , comment, theorem.theorems
             , tikz, code_blocks.codeblocks 
             , table.do_filter
         ]

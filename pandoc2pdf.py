@@ -20,17 +20,17 @@ script_dir = os.path.dirname( os.path.realpath( __file__ ) )
 
 def main( args, extra ):
     args.output = args.output or '%s.pdf' % args.input
-    filters = [ ' -F %s' % f for f in helper.generic_filters( ) ]
-    cmd = '%s %s' % ( helper.pandoc_cmd(), ''.join(filters) )
-    cmd += ' --pdf-engine lualatex '
-    cmd += ' --template %s ' % helper.default_tex_template( )
-    if args.verbose:
-        cmd += ' --verbose '
+    texfile = args.output.rstrip( '.pdf'  ) +  '.tex'
 
-    cmd += ' %s' % ' '.join( extra )
-    cmd += ' -o %s %s ' % (args.output, args.input)
-    res = helper.run( cmd )
-    
+    filters = [ ' -F %s' % f for f in helper.generic_filters( ) ]
+    base = '%s %s' % ( helper.pandoc_cmd(), ''.join(filters) )
+    base += ' --pdf-engine lualatex '
+    base += ' --template %s ' % helper.default_tex_template( )
+    if args.verbose:
+        base += ' --verbose '
+    base += ' %s' % ' '.join( extra )
+    res = helper.run( '%s -o %s %s ' % (base, texfile, args.input) )
+    res = helper.run( 'lualatex -shell-escape %s ' % texfile ) 
 
 if __name__ == '__main__':
     import argparse
