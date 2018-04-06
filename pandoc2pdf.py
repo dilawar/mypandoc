@@ -27,9 +27,7 @@ def main( args, extra ):
 
     cmd += ' %s' % ' '.join( extra )
     cmd += ' -o %s %s ' % (args.output, args.input)
-    print( "[INFO ] Excuting %s" % cmd )
     res = helper.run( cmd )
-    print( res )
     
 
 if __name__ == '__main__':

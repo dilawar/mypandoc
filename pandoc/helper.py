@@ -15,6 +15,7 @@ import sys
 import os
 import shutil
 import subprocess
+from sty import ef, fg, rs
 
 script_dir_ = os.path.dirname( os.path.realpath( __file__ ) )
 
@@ -41,6 +42,8 @@ def pandoc_cmd( ):
     return path
 
 def run( cmd ):
+    print( ef.bold + "[INFO ] Excuting " + fg.blue + "%s" % cmd  
+            + fg.rs + rs.bold )
     cmd = cmd.split( )
     cmd = [ x for x in cmd if x.strip() ]
     res = subprocess.run( cmd, shell =False, check = True )
