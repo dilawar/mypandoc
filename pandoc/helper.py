@@ -14,6 +14,7 @@ __status__           = "Development"
 import sys
 import os
 import shutil
+import subprocess
 
 script_dir_ = os.path.dirname( os.path.realpath( __file__ ) )
 
@@ -31,3 +32,19 @@ def generic_filters( filters = None ):
     flts = path_of_filters ( filters )
     flts.append( os.path.join( script_dir_, 'dilawar.py' ) )
     return flts
+
+def pandoc_cmd( ):
+    path = shutil.which( 'pandoc' )
+    if path is None:
+        print( "[ERROR] Could not find pandoc." )
+        quit( -1 )
+    return path
+
+def run( cmd ):
+    cmd = cmd.split( )
+    cmd = [ x for x in cmd if x.strip() ]
+    res = subprocess.run( cmd, shell =False, check = True )
+    if res.returncode != 0:
+        print( "[WARN ] Failuer. %s" % res.stderr )
+    return res
+
