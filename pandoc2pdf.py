@@ -19,8 +19,8 @@ import subprocess
 def main( args ):
     pandocSrc = args.input
     pdf = args.output
-    filters = filters.generic_filters( )
-    print( filters )
+    myf = filters.generic_filters( )
+    print( myf )
     
 
 if __name__ == '__main__':
