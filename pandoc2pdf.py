@@ -16,12 +16,14 @@ import re
 from pandoc import helper
 import subprocess
 
+script_dir = os.path.dirname( os.path.realpath( __file__ ) )
 
 def main( args, extra ):
     args.output = args.output or '%s.pdf' % args.input
     filters = [ ' -F %s' % f for f in helper.generic_filters( ) ]
     cmd = '%s %s' % ( helper.pandoc_cmd(), ''.join(filters) )
     cmd += ' --pdf-engine lualatex '
+    cmd += ' --template %s ' % helper.default_tex_template( )
     if args.verbose:
         cmd += ' --verbose '
 

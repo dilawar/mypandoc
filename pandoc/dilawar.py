@@ -27,6 +27,7 @@ script_dir = os.path.dirname( __file__ )
 sys.path.append( script_dir )
 import theorem
 import code_blocks
+import table
 
 incomment = False
 
@@ -128,5 +129,9 @@ def image_with_url( k, v, fmt, meta ):
 
 if __name__ == "__main__":
     toJSONFilters( 
-        [ image_with_url, comment, theorem.theorems, tikz, code_blocks.codeblocks ] 
-        ) 
+        [ 
+            image_with_url, comment, theorem.theorems
+            , tikz, code_blocks.codeblocks 
+            , table.do_filter
+        ]
+    ) 

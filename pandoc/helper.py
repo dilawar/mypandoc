@@ -52,3 +52,5 @@ def run( cmd ):
         print( "[WARN ] Failuer. %s" % res.stderr )
     return res
 
+def default_tex_template( ):
+    return os.path.join( script_dir_, 'templates', 'default.latex' )
