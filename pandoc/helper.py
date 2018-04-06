@@ -20,7 +20,8 @@ from sty import ef, fg, rs
 script_dir_ = os.path.dirname( os.path.realpath( __file__ ) )
 
 # Third party filters_ I use.
-filters_ = [ 'pandoc-citeproc', 'pandoc-crossref', 'pandoc-imagine', 'gandu' ]
+# citeproc must come after crossref.
+filters_ = [ 'pandoc-crossref', 'pandoc-citeproc', 'pandoc-imagine' ]
 
 def path_of_filters( filters = filters_ ):
     paths = [ shutil.which( f ) for f in filters ]
