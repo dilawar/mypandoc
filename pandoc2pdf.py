@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # Convert pandoc source code to PDF file.
     
@@ -20,11 +21,10 @@ def main( args, extra ):
     args.output = args.output or '%s.pdf' % args.input
     filters = [ ' -F %s' % f for f in helper.generic_filters( ) ]
     cmd = '%s %s' % ( helper.pandoc_cmd(), ''.join(filters) )
+    cmd += ' --pdf-engine lualatex '
     if args.verbose:
         cmd += ' --verbose '
 
-    print( "[INFO ] Extra args", extra )
-    
     cmd += ' %s' % ' '.join( extra )
     cmd += ' -o %s %s ' % (args.output, args.input)
     print( "[INFO ] Excuting %s" % cmd )
