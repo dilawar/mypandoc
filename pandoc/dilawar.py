@@ -66,6 +66,12 @@ def tikz2image(tikz_src, filetype, outfile):
     olddir = os.getcwd()
     os.chdir(tmpdir)
 
+    # remove math \[ and ]/ from tikz_src 
+    tikz_src = tikz_src.strip()
+    tikz_src = tikz_src.rstrip( r'\]' )
+    tikz_src = tikz_src.lstrip( r'\[' )
+    tikz_src += "\% auto generated using filter \n"
+
     basename = get_filename4code("tikz", tikz_src)
     texfile = os.path.join( tmpdir, basename + '.tex' )
     pdffile = os.path.join( tmpdir, basename + '.pdf' )
@@ -73,9 +79,8 @@ def tikz2image(tikz_src, filetype, outfile):
     pre, post, text = [], [], []
     if r'\documentclass' not in tikz_src:
         pre = [ "\\RequirePackage{luatex85,shellesc}"
-                , "\\documentclass{standalone}"
-                , "\\usepackage{tikz}"
-                , "\\usepackage[sfdefault]{firasans}"
+                , "\\documentclass[trim,multi=false,tikz]{standalone}"
+                , "\\usepackage[sfdefault]{FiraSans}"
                 , "\\usepackage[small,euler-digits]{eulervm}"
                 , "\\usepackage{pgfplots}"
                 , "\\pgfplotslibrary[]{units,groupplots}"
@@ -97,9 +102,7 @@ def tikz2image(tikz_src, filetype, outfile):
 def tikz_code_to_image( code, format ):
     if not os.path.isfile(src):
         try:
-            src = tikz2image(code, filetype )
-            log('Created image ' + src )
-            return src
+            tikz2image(code, filetype )
         except Exception as e:
             log( "Failed to create image", e )
             return 'FAILED'
@@ -145,7 +148,6 @@ def image_with_standalone( k, v, fmt, meta ):
             src = outfile + '.' + filetype
             if not os.path.isfile(src):
                 tikz2image(code, filetype, outfile)
-                log('Created image ' + src )
             return Para([Image(['', [], []], [], [src, ""])])
 
 if __name__ == "__main__":

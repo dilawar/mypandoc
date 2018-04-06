@@ -35,8 +35,6 @@ def gen_standalone( code, dest ):
     dest = os.path.realpath( dest )
     ext = dest.split( '.' )[-1]
 
-    code = r'\[ %s \]' % code
-
     tex = [ '\\RequirePackage{luatex85,shellesc}' ]
     tex += [ '\\documentclass[preview,multi=false]{standalone}' ]
     tex += [ '\\usepackage{amsmath,amssymb}' ]
