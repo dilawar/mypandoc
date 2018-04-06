@@ -1,0 +1,3 @@
+pantable
+pandoc-imagine
+pandocfilters
