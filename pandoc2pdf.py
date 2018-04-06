@@ -16,12 +16,16 @@ from pandoc import helper
 import subprocess
 
 
-def main( args ):
+def main( args, extra ):
     args.output = args.output or '%s.pdf' % args.input
     filters = [ ' -F %s' % f for f in helper.generic_filters( ) ]
     cmd = '%s %s' % ( helper.pandoc_cmd(), ''.join(filters) )
     if args.verbose:
         cmd += ' --verbose '
+
+    print( "[INFO ] Extra args", extra )
+    
+    cmd += ' %s' % ' '.join( extra )
     cmd += ' -o %s %s ' % (args.output, args.input)
     print( "[INFO ] Excuting %s" % cmd )
     res = helper.run( cmd )
@@ -45,8 +49,6 @@ if __name__ == '__main__':
         , required = False, default = False, action = 'store_true'
         , help = 'Enable verbose mode.'
         )
-    class Args: pass 
-    args = Args()
-    parser.parse_args(namespace=args)
-    main( args )
+    args, extra = parser.parse_known_args( )
+    main( args, extra )
 
