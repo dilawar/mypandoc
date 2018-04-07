@@ -22,15 +22,21 @@ def main( args, extra ):
     args.output = args.output or '%s.pdf' % args.input
     texfile = args.output.rstrip( '.pdf'  ) +  '.tex'
     filters = [ ' -F %s' % f for f in helper.generic_filters( ) ]
+
     base = '%s %s' % ( helper.pandoc_cmd(), ''.join(filters) )
     base += ' --pdf-engine lualatex '
     base += ' --template %s ' % helper.default_tex_template( )
-    if args.tex:
-        base += ' --verbose '
-    base += ' %s' % ' '.join( extra )
+
     if args.verbose:
+        base += ' --verbose '
+
+    base += ' %s' % ' '.join( extra )
+
+    if args.tex:
         print( "[INFO ] Generating TeX for our review." )
         res = helper.run( '%s -o %s %s ' % (base, texfile, args.input) )
+
+    # Generate pdf.
     res = helper.run( '%s -o %s %s ' % (base, args.output, args.input) )
 
 if __name__ == '__main__':
