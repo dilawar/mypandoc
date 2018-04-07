@@ -114,9 +114,6 @@ def process( value, format ):
         dest = get_filename4code("standalone", code, filetype)
         if not os.path.isfile(dest):
             gen_standalone(code, dest)
-            sys.stderr.write('Created image ' + dest + '\n')
-        else:
-            sys.stderr.write('Exists  ' + dest + '\n')
 
         return Para([Image([ident, [], keyvals], caption, [dest, typef])])
 
