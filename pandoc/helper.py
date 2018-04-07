@@ -54,8 +54,7 @@ def run( cmd ):
             , universal_newlines = True
             )
     if res.returncode != 0:
-        log( "Failure. `red **%s**`" % res.stderr.replace('\n', '\n⚠ ')
-            , 'ERROR' )
+        log( '⚠ Previous command may have failed.' )
     return res
 
 def default_tex_template( ):
