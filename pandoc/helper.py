@@ -50,7 +50,7 @@ def run( cmd ):
     cmd = cmd.split( )
     cmd = [ x for x in cmd if x.strip() ]
     res = subprocess.run(cmd, shell=False
-            , stderr=subprocess.PIPE 
+            #  , stderr=subprocess.PIPE
             , universal_newlines = True
             )
     if res.returncode != 0:
