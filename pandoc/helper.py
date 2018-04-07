@@ -41,17 +41,21 @@ def generic_filters( filters = None ):
 def pandoc_cmd( ):
     path = shutil.which( 'pandoc' )
     if path is None:
-        print( "[ERROR] Could not find pandoc." )
+        log( "`red Could not find pandoc.`", 'ERROR' )
         quit( -1 )
     return path
 
 def run( cmd ):
-    log( "__`blue Executing " + fg.blue + "%s`" % cmd )
+    log( "Executing `blue %s`" % cmd )
     cmd = cmd.split( )
     cmd = [ x for x in cmd if x.strip() ]
-    res = subprocess.run(cmd, shell =False, check = True)
+    res = subprocess.run(cmd, shell=False
+            , stderr=subprocess.PIPE 
+            , universal_newlines = True
+            )
     if res.returncode != 0:
-        print( "[WARN ] Failuer. %s" % res.stderr )
+        log( "Failure. `red **%s**`" % res.stderr.replace('\n', '\n ⤑ ')
+            , 'ERROR' )
     return res
 
 def default_tex_template( ):
@@ -60,17 +64,20 @@ def default_tex_template( ):
 def log( msg, level = 'INFO' ):
     try:
         from sty import ef, fg, rs
+        boldPat = re.compile( r'(\*\*)(?P<text>.+?)(\*\*)', re.DOTALL )
+        itPat = re.compile( r'(\*)(?P<text>.+?)(\*)', re.DOTALL )
+        colorPat = re.compile( r'`(?P<color>\w+)\s+(?P<text>.+?)\`', re.DOTALL )
 
         # bold 
-        for m in re.finditer( r'(\*\*|\_\_)(?P<text>.+?)(\*\*|\_\_)', msg ):
+        for m in boldPat.finditer( msg ):
             msg = msg.replace( m.group(0), ef.b + m.group('text') + rs.b )
 
         # italics
-        for m in re.finditer( r'(\*|\_)(?P<text>.+?)(\*|\_)', msg ):
+        for m in itPat.finditer( msg ):
             msg = msg.replace( m.group(0), ef.i + m.group('text') + rs.i )
 
         # Insert colors.
-        for m in re.finditer( r'`(?P<color>\w+)\s+(?P<text>.+?)\`', msg ):
+        for m in colorPat.finditer( msg ):
             c, t = m.group('color'), m.group( 'text' )
             msg = msg.replace( m.group(0), '%s%s' % (getattr(fg,c), t) + fg.rs )
 
