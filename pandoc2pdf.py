@@ -33,7 +33,7 @@ def main( args, extra ):
     base += ' %s' % ' '.join( extra )
 
     if args.tex:
-        print( "[INFO ] Generating TeX for our review." )
+        helper.log( "Generating TeX for our review." )
         res = helper.run( '%s -o %s %s ' % (base, texfile, args.input) )
 
     # Generate pdf.

@@ -15,7 +15,7 @@ import sys
 import os
 import shutil
 import subprocess
-from sty import ef, fg, rs
+import re
 
 script_dir_ = os.path.dirname( os.path.realpath( __file__ ) )
 
@@ -46,14 +46,41 @@ def pandoc_cmd( ):
     return path
 
 def run( cmd ):
-    print( ef.bold + "[INFO ] Excuting " + fg.blue + "%s" % cmd  
-            + fg.rs + rs.bold )
+    log( "__`blue Executing " + fg.blue + "%s`" % cmd )
     cmd = cmd.split( )
     cmd = [ x for x in cmd if x.strip() ]
-    res = subprocess.run( cmd, shell =False, check = True )
+    res = subprocess.run(cmd, shell =False, check = True)
     if res.returncode != 0:
         print( "[WARN ] Failuer. %s" % res.stderr )
     return res
 
 def default_tex_template( ):
     return os.path.join( script_dir_, 'templates', 'default.latex' )
+
+def log( msg, level = 'INFO' ):
+    try:
+        from sty import ef, fg, rs
+
+        # bold 
+        for m in re.finditer( r'(\*\*|\_\_)(?P<text>.+?)(\*\*|\_\_)', msg ):
+            msg = msg.replace( m.group(0), ef.b + m.group('text') + rs.b )
+
+        # italics
+        for m in re.finditer( r'(\*|\_)(?P<text>.+?)(\*|\_)', msg ):
+            msg = msg.replace( m.group(0), ef.i + m.group('text') + rs.i )
+
+        # Insert colors.
+        for m in re.finditer( r'`(?P<color>\w+)\s+(?P<text>.+?)\`', msg ):
+            c, t = m.group('color'), m.group( 'text' )
+            msg = msg.replace( m.group(0), '%s%s' % (getattr(fg,c), t) + fg.rs )
+
+    except ImportError as e:
+        print( e, file = sys.stderr )
+
+    print( '[%3s] %s' % (level, msg ) )
+
+def test( ):
+    log( '`blue *Hellow* kitty`. `red how are you __today__`. I am _fine_.' )
+
+if __name__ == '__main__':
+    test()
