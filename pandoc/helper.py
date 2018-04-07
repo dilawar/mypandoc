@@ -54,7 +54,7 @@ def run( cmd ):
             , universal_newlines = True
             )
     if res.returncode != 0:
-        log( "Failure. `red **%s**`" % res.stderr.replace('\n', '\n ⤑ ')
+        log( "Failure. `red **%s**`" % res.stderr.replace('\n', '\n⚠ ')
             , 'ERROR' )
     return res
 
