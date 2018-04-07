@@ -21,7 +21,10 @@ script_dir_ = os.path.dirname( os.path.realpath( __file__ ) )
 
 # Third party filters_ I use.
 # citeproc must come after crossref.
-filters_ = [ 'pandoc-crossref', 'pandoc-citeproc', 'pandoc-imagine' ]
+filters_ = [ 
+        'pandoc-crossref', 'pandoc-citeproc'
+        , 'pandoc-imagine', 'pantable'
+    ]
 
 def path_of_filters( filters = filters_ ):
     paths = [ shutil.which( f ) for f in filters ]
