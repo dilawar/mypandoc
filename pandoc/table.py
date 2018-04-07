@@ -80,7 +80,7 @@ def do_filter(k, v, f, m):
         table = []
         delimiter = ''
         if caption:
-            table.append(latex(r'\begin{table*}[tb]' '\n' r'\myfloatalign' '\n'))
+            table.append(latex(r'\begin{table*}[tb]' '\n' ))
             if wide > -1:
                 table.append(latex(r'\begin{wide}' '\n'))
             table.append(latex(r'\begin{tabularx}{\linewidth}{%s}' % tbl_alignment(v[1], 'X') + ('\n' r'\toprule')))

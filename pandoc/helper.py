@@ -22,8 +22,9 @@ script_dir_ = os.path.dirname( os.path.realpath( __file__ ) )
 # Third party filters_ I use.
 # citeproc must come after crossref.
 filters_ = [ 
-        'pandoc-crossref', 'pandoc-citeproc'
-        , 'pandoc-imagine', 'pantable'
+        'pantable'                              # pantable before crossref
+        , 'pandoc-crossref', 'pandoc-citeproc'
+        , 'pandoc-imagine'
     ]
 
 def path_of_filters( filters = filters_ ):
@@ -49,9 +50,10 @@ def run( cmd ):
     log( "Executing `blue %s`" % cmd )
     cmd = cmd.split( )
     cmd = [ x for x in cmd if x.strip() ]
-    res = subprocess.run(cmd, shell=False
+    res = subprocess.run(cmd
+            , shell=False
             #  , stderr=subprocess.PIPE
-            , universal_newlines = True
+            #  , universal_newlines = True
             )
     if res.returncode != 0:
         log( '⚠ Previous command may have failed.' )
