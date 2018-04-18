@@ -25,7 +25,7 @@ pandoc_ = [ 'pandoc'
         , '--mathml'
         , '-F', 'pandoc-crossref'
         , '-F', 'pandoc-imagine'
-        , '-F', os.path.join( script_dir_, "/pandoc/dilawar.py" )
+        , '-F', os.path.join( script_dir_, "pandoc", "dilawar.py" )
         , '-F', 'pandoc-citeproc', '--standalone', '--self-contained'
         ]
 
@@ -82,7 +82,9 @@ def process( text ):
 def main( ):
     global srcFile_
     srcFile_ = sys.argv[1]
-    text = pandoc_preprocess_doc_html.replace( srcFile_ )
+    #  text = pandoc_preprocess_doc_html.replace( srcFile_ )
+    with open( srcFile_ ) as f:
+        text = f.read( )
     process( text )
 
 if __name__ == '__main__':
