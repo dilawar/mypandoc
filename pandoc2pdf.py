@@ -24,7 +24,7 @@ def main( args, extra ):
     filters = [ ' -F %s' % f for f in helper.generic_filters( ) ]
 
     base = '%s %s' % ( helper.pandoc_cmd(), ''.join(filters) )
-    base += ' --pdf-engine lualatex '
+    base += ' --pdf-engine lualatex --pdf-engine-opt=-shell-escape'
     base += ' --template %s ' % helper.default_tex_template( )
 
     if args.verbose:
