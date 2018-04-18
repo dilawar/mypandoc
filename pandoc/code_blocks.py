@@ -32,8 +32,14 @@ def replace_ext( filename, newext = 'tex' ):
     return re.sub( r'(.+?)\.%s$' % oldExt, '\1\.%s' % newext )
 
 def gen_standalone( code, dest ):
+
+    # prepare variables.
     dest = os.path.realpath( dest )
     ext = dest.split( '.' )[-1]
+    dirname = os.path.dirname( dest )
+    basename = os.path.basename( dest )
+    nameWE = '.'.join( basename.split( '.' )[:-1] )
+    texFile = os.path.join( dirname, nameWE + '.tex' )
 
     tex = [ '\\RequirePackage{luatex85,shellesc}' ]
     tex += [ '\\documentclass[preview,multi=false]{standalone}' ]
@@ -42,6 +48,7 @@ def gen_standalone( code, dest ):
     tex += [ '\\usepackage[small,euler-digits]{eulervm}' ]
     tex += [ '\\usepackage{chemfig}' ]
     tex += [ '\\usepackage{pgfplots}' ]
+    tex += [ '\\usepackage{pgfplotstable}' ]
     tex += [ '\\usepgfplotslibrary{units}' ]
     if r'\begin{document}' not in code:
         tex += [ '\\begin{document}' ]
@@ -49,10 +56,7 @@ def gen_standalone( code, dest ):
     if r'\end{document}' not in code:
         tex += [ '\\end{document}']
 
-    dirname = os.path.dirname( dest )
-    basename = os.path.basename( dest )
-    nameWE = '.'.join( basename.split( '.' )[:-1] )
-    texFile = os.path.join( dirname, nameWE + '.tex' )
+
 
     # Write file
     with open( texFile, 'w' ) as f:
@@ -114,7 +118,8 @@ def process( value, format ):
         dest = get_filename4code("standalone", code, filetype)
         if not os.path.isfile(dest):
             gen_standalone(code, dest)
-
+        else:
+            pass
         return Para([Image([ident, [], keyvals], caption, [dest, typef])])
 
 if __name__ == "__main__":

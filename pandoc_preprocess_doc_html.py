@@ -130,17 +130,20 @@ def read_glossaries( gls_files ):
     return glossaries
 
 def replace( infile ):
-    dirname = os.path.dirname( os.path.realpath(infile) )
-    with open( infile, 'r' ) as f:
-        tex = f.read( )
+    if isinstance( infile, str ):
+        infile = open( infile, 'r' ) 
+    dirname = os.path.dirname( os.path.realpath(infile.name) )
+    tex = infile.read( )
     glsFiles = find_glossaries( tex, dirname )
     gls = read_glossaries( glsFiles )
     text = replace_glossaries( tex, gls )
     text = replace_si( text )
+    infile.close( )
     return text
 
 def main( args ):
-    return replace( args.INPUT )
+    final = replace( args.INPUT )
+    print(final, file=sys.stdout )
 
 if __name__ == '__main__':
     import argparse

@@ -11,9 +11,10 @@ set -e
 set -o nounset                                  # Treat unset variables as an error
 
 TEXFILE="$1"
-EXT=${2:-docx}
+EXT=${2:-odt}
 
+echo "Converting $EXT from $TEXFILE"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PANDOC_FILTERS="$($SCRIPT_DIR/./pandoc_find_filters.sh)"
-cat $TEXFILE | $SCRIPT_DIR/preprocess_of_docx.py | \
-    pandoc -f latex $PANDOC_FILTERS -o $TEXFILE.$EXT
+cat $TEXFILE | $SCRIPT_DIR/pandoc_preprocess_doc_html.py | \
+    pandoc -f latex -t $EXT $PANDOC_FILTERS -o $TEXFILE.$EXT
