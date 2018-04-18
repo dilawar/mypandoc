@@ -19,11 +19,13 @@ import pandoc_preprocess_doc_html
 
 srcFile_ = None
 
+script_dir_ = os.path.dirname( os.path.realpath( __file__ ) )
+
 pandoc_ = [ 'pandoc'
         , '--mathml'
         , '-F', 'pandoc-crossref'
         , '-F', 'pandoc-imagine'
-        , '-F', os.path.join( os.getenv( 'HOME' ), "Scripts/pandoc/dilawar.py" )
+        , '-F', os.path.join( script_dir_, "/pandoc/dilawar.py" )
         , '-F', 'pandoc-citeproc', '--standalone', '--self-contained'
         ]
 

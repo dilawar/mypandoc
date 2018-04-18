@@ -43,7 +43,7 @@ def gen_standalone( code, dest ):
 
     tex = [ '\\RequirePackage{luatex85,shellesc}' ]
     tex += [ '\\documentclass[preview,multi=false]{standalone}' ]
-    tex += [ '\\usepackage{amsmath,amssymb}' ]
+    tex += [ '\\usepackage{amsmath,amssymb,siunitx}' ]
     tex += [ '\\usepackage[sfdefault]{FiraSans}' ]
     tex += [ '\\usepackage[small,euler-digits]{eulervm}' ]
     tex += [ '\\usepackage{chemfig}' ]
