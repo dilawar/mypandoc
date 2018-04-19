@@ -155,7 +155,7 @@ if __name__ == "__main__":
         [ 
             image_with_url, image_with_standalone
             , comment, theorem.theorems
-            , tikz, code_blocks.codeblocks 
+            , code_blocks.codeblocks 
             , table.do_filter
         ]
     ) 

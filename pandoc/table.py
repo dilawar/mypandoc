@@ -61,6 +61,8 @@ def tbl_contents(s, delimiter):
     return pf.Para(result)
 
 def do_filter(k, v, f, m):
+    if f != 'latex':
+        return 
     if k == "Table":
         # is wide?
         wide = -1
