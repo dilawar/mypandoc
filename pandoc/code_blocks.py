@@ -91,9 +91,8 @@ def process( value, format ):
     [[ident, classes, keyvals], code] = value
     if "graphviz" in classes:
         caption, typef, keyvals = get_caption(keyvals)
-        filetype = get_extension(format, "png", html="png", latex="pdf")
+        filetype = get_extension(format, "png")
         dest = get_filename4code("graphviz", code, filetype)
-
         if not os.path.isfile(dest):
             import pygraphviz
             g = pygraphviz.AGraph(string=code)

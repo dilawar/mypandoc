@@ -1,5 +1,5 @@
+# -*- coding: utf-8 -*-
 """filters.py: 
-
 Find all available filters.
 
 """
@@ -83,9 +83,12 @@ def log( msg, level = 'INFO' ):
             msg = msg.replace( m.group(0), '%s%s' % (getattr(fg,c), t) + fg.rs )
 
     except ImportError as e:
-        print( e, file = sys.stderr )
+        pass
 
-    print( '[%3s] %s' % (level, msg ) )
+    try:
+        print( '[%3s] %s' % (level, msg))
+    except Exception as e:
+        print( '[%3s] %s' % (level, msg.encode('utf-8') ) )
 
 def test( ):
     log( '`blue *Hellow* kitty`. `red how are you __today__`. I am _fine_.' )
