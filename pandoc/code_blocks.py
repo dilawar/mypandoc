@@ -42,11 +42,12 @@ def gen_standalone( code, dest ):
     texFile = os.path.join( dirname, nameWE + '.tex' )
 
     tex = [ '\\RequirePackage{luatex85,shellesc}' ]
-    tex += [ '\\documentclass[preview,multi=false]{standalone}' ]
+    tex += [ '\\documentclass[preview,multi=false,tikz]{standalone}' ]
     tex += [ '\\usepackage{amsmath,amssymb,siunitx}' ]
     tex += [ '\\usepackage[sfdefault]{FiraSans}' ]
     tex += [ '\\usepackage[small,euler-digits]{eulervm}' ]
     tex += [ '\\usepackage{chemfig}' ]
+    tex += [ '\\usetikzlibrary{shapes,arrows,arrows.meta,positioning,calc}' ]
     tex += [ '\\usepackage{pgfplots}' ]
     tex += [ '\\usepackage{pgfplotstable}' ]
     tex += [ '\\usepgfplotslibrary{units}' ]
