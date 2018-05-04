@@ -17,18 +17,20 @@ import os
 import re
 
 def main( filename ):
-    filedir = os.path.dirname(os.path.realpath(filename))
-    with open(filename, 'r') as f:
-        text = f.read()
-    text = replace_in_text(text, filedir)
+    filedir = os.path.dirname( os.path.realpath(filename) )
+    with open( filename, 'r' ) as f:
+        text = f.read( )
+    text = expand_in_text( text, filedir )
     print(text, file = sys.stdout)
 
-def replace_in_text(text, filedir):
+def expand_in_text( text, filedir ):
     for m in re.finditer( r'\.?\/(\S+?\.\w+)', text ):
         path = os.path.join( filedir, m.group(1) )
         # replace it with absolute path.
         if os.path.isfile( path ):
             text = text.replace( m.group(0), path )
+        else:
+            print('x', path )
     return text
 
 if __name__ == '__main__':
