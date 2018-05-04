@@ -57,6 +57,7 @@ def run( cmd ):
             )
     if res.returncode != 0:
         log( '⚠ Previous command may have failed.' )
+        log( res )
     return res
 
 def default_tex_template( ):
@@ -82,7 +83,7 @@ def log( msg, level = 'INFO' ):
             c, t = m.group('color'), m.group( 'text' )
             msg = msg.replace( m.group(0), '%s%s' % (getattr(fg,c), t) + fg.rs )
 
-    except ImportError as e:
+    except Exception as e:
         pass
 
     try:

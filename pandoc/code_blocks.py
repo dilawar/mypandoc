@@ -20,19 +20,21 @@ from pandocfilters import toJSONFilter, Para
 from pandocfilters import Image, get_filename4code, get_caption, get_extension
 from pandocfilters import RawBlock
 
+# expand filename to absolute.
+import expand_file_name
+
 
 def latex( x ):
     return RawBlock( 'latex',  x)
 
 def print1( *msg ):
-    print( msg, file=sys.stderr )
+    print( '\n'.join(msg), file=sys.stderr )
 
 def replace_ext( filename, newext = 'tex' ):
     oldExt = filename.split( '.' )[-1]
     return re.sub( r'(.+?)\.%s$' % oldExt, '\1\.%s' % newext )
 
 def gen_standalone( code, dest ):
-
     # prepare variables.
     dest = os.path.realpath( dest )
     ext = dest.split( '.' )[-1]
@@ -58,11 +60,11 @@ def gen_standalone( code, dest ):
         tex += [ '\\end{document}']
 
 
-
     # Write file
+    texText =  expand_file_name.replace_in_text( '\n'.join( tex ) )
     with open( texFile, 'w' ) as f:
-        f.write( '\n'.join( tex ) )
-
+        f.write( texText )
+    print1('[INFO] Wrote standalone file: %s' % texFile)
     res1 = subprocess.check_output( 
             [ 'lualatex', '-shell-escape', texFile ]
             , shell=False, stderr = subprocess.STDOUT 
@@ -104,22 +106,13 @@ def process( value, format ):
         return Para([Image([ident, [], keyvals], caption, [dest, typef])])
 
     elif "standalone" in classes:
-        #  print( 'Found standalone', file = sys.stderr, end = ' ' )
-        #if format == "latex":
-        #    #  print( ' writer latex', file = sys.stderr )
-        #    # if writer is latex, there is no need to generate spearate
-        #    # standalone figure. Embed into latex itself.
-        #    newCode = r'\label{%s}' % ident if ident else ''
-        #    newCode += '\n%s ' % code
-        #    return latex( newCode )
-
         caption, typef, keyvals = get_caption(keyvals)
         filetype = get_extension(format, "png", html="png", latex="pdf")
         dest = get_filename4code("standalone", code, filetype)
         if not os.path.isfile(dest):
             gen_standalone(code, dest)
         else:
-            pass
+            print1('[INFO] Image file %s already generated' % dest )
         return Para([Image([ident, [], keyvals], caption, [dest, typef])])
 
 if __name__ == "__main__":
