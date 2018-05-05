@@ -73,13 +73,9 @@ def gen_standalone( code, dest ):
         outfile = os.path.join( dirname, nameWE + '.%s' % ext )
         print1( pdfFile, outfile )
         opts = '-density 300 -antialias -quality 100'. split( )
-        res = subprocess.check_output( 
-                [ 'convert', pdfFile ] + opts + [ outfile ]
-                , shell=False
-                , stderr = subprocess.STDOUT
-                , cwd = dirname
+        res = helper.run( 'convert %s %s %s' %(pdfFile, opts, outfile)
+                , cwd=dirname
                 )
-
     assert os.path.isfile( dest ), "%s could not be generated." % dest
     
 
