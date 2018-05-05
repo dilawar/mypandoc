@@ -72,7 +72,7 @@ def gen_standalone( code, dest ):
         pdfFile = os.path.join( dirname, nameWE + '.pdf' )
         outfile = os.path.join( dirname, nameWE + '.%s' % ext )
         print1( pdfFile, outfile )
-        opts = '-density 300 -antialias -quality 100'. split( )
+        opts = '-density 300 -antialias -quality 100'
         res = helper.run( 'convert %s %s %s' %(pdfFile, opts, outfile)
                 , cwd=dirname
                 )
