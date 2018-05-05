@@ -42,7 +42,7 @@ def main( args, extra ):
 if __name__ == '__main__':
     import argparse
     # Argument parser.
-    description = '''pandoc2pdf.'''
+    description = '''pandoc to pdf.'''
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--input', '-i'
         , required = True

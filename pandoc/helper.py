@@ -29,7 +29,7 @@ filters_ = [
 
 def path_of_filters( filters = filters_ ):
     paths = [ shutil.which( f ) for f in filters ]
-    return [ p for p in paths if p is not None ]
+    return list(filter(lambda p: p is not None, paths))
 
 
 def generic_filters( filters = None ):
