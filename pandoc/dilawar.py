@@ -14,7 +14,7 @@ import re
 import shutil
 import sys
 import functools
-import subprocess
+import helper
 import hashlib
 import requests
 import mimetypes
@@ -95,7 +95,7 @@ def tikz2image(tikz_src, filetype, outfile):
     if filetype == 'pdf':
         shutil.copyfile(pdffile, os.path.join(olddir, basename + '.pdf'))
     else:
-        subprocess.call(["convert", pdffile, os.path.join(olddir, basename+'.png')])
+        helper.run("convert %s %s"%(pdffile, os.path.join(olddir,basename+'.png')))
     shutil.rmtree(tmpdir)
 
 def tikz_code_to_image( code, format ):

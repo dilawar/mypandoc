@@ -46,7 +46,11 @@ def pandoc_cmd( ):
         quit( -1 )
     return path
 
-def run( cmd ):
+def run( cmd, cwd = None ):
+    olddir = os.getcwd()
+    if cwd is not None:
+        os.chdir( cwd )
+
     log( "Executing `blue %s`" % cmd )
     cmd = cmd.split( )
     cmd = [ x for x in cmd if x.strip() ]
@@ -60,10 +64,13 @@ def run( cmd ):
         err = err.decode('utf-8')
     except Exception as e:
         pass
+
     if pipe.returncode != 0:
-        log( 'FAILED\n| RETCODE: %s\n| ERROR: %s' % (pipe.returncode, err))
-        log( '| OUTPUT: %s' % stdout )
+        #  log( 'FAILED\n| RETCODE: %s\n| ERROR: %s' % (pipe.returncode, err))
         log( '| COMMAND: %s' % ' '.join(cmd) )
+        log( '| OUTPUT: %s' % stdout )
+
+    os.chdir(olddir)
 
 def default_tex_template( ):
     return os.path.join( script_dir_, 'templates', 'default.latex' )
