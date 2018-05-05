@@ -14,7 +14,7 @@ Dependencies:
 import os
 import sys
 import re
-import subprocess
+import helper
 
 from pandocfilters import toJSONFilter, Para
 from pandocfilters import Image, get_filename4code, get_caption, get_extension
@@ -66,11 +66,7 @@ def gen_standalone( code, dest ):
     expand_file_name.main(texFile, texFile)
 
     print1('[INFO] Wrote standalone file: %s' % texFile)
-    res1 = subprocess.check_output( 
-            [ 'lualatex', '-shell-escape', texFile ]
-            , shell=False, stderr = subprocess.STDOUT 
-            , cwd = dirname
-            )
+    res1 = helper.run('lualatex -shell-escape %s' % texFile)
 
     if ext != 'pdf':
         pdfFile = os.path.join( dirname, nameWE + '.pdf' )

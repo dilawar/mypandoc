@@ -27,7 +27,6 @@ script_dir = os.path.dirname( __file__ )
 sys.path.append( script_dir )
 import theorem
 import code_blocks
-import table
 
 incomment = False
 
@@ -156,6 +155,7 @@ if __name__ == "__main__":
             image_with_url, image_with_standalone
             , comment, theorem.theorems
             , code_blocks.codeblocks 
-            , table.do_filter
+            # This one is fragile.
+            #  , table.do_filter
         ]
     ) 

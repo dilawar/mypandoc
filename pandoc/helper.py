@@ -50,15 +50,20 @@ def run( cmd ):
     log( "Executing `blue %s`" % cmd )
     cmd = cmd.split( )
     cmd = [ x for x in cmd if x.strip() ]
-    res = subprocess.run(cmd
-            , shell=False
-            #  , stderr=subprocess.PIPE
-            #  , universal_newlines = True
+    pipe = subprocess.Popen(cmd
+            , stderr=subprocess.PIPE
+            , stdout=subprocess.PIPE
             )
-    if res.returncode != 0:
-        log( '⚠ Previous command may have failed.' )
-        log( res )
-    return res
+    stdout, err = pipe.communicate()
+    try:
+        stdout = stdout.decode('utf-8')
+        err = err.decode('utf-8')
+    except Exception as e:
+        pass
+    if pipe.returncode != 0:
+        log( 'FAILED\n| RETCODE: %s\n| ERROR: %s' % (pipe.returncode, err))
+        log( '| OUTPUT: %s' % stdout )
+        log( '| COMMAND: %s' % ' '.join(cmd) )
 
 def default_tex_template( ):
     return os.path.join( script_dir_, 'templates', 'default.latex' )
@@ -87,9 +92,9 @@ def log( msg, level = 'INFO' ):
         pass
 
     try:
-        print( '[%3s] %s' % (level, msg))
+        print('[%3s] %s' % (level, msg), file=sys.stderr)
     except Exception as e:
-        print( '[%3s] %s' % (level, msg.encode('utf-8') ) )
+        print('[%3s] %s' % (level, msg.encode('utf-8')), file=sys.stderr)
 
 def test( ):
     log( '`blue *Hellow* kitty`. `red how are you __today__`. I am _fine_.' )
