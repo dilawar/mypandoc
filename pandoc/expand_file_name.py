@@ -16,22 +16,49 @@ import sys
 import os
 import re
 
-def main( filename ):
+def main( filename, outfile = None ):
     filedir = os.path.dirname( os.path.realpath(filename) )
     with open( filename, 'r' ) as f:
         text = f.read( )
     text = expand_in_text( text, filedir )
-    print(text, file = sys.stdout)
+
+    if outfile is not None:
+        with open(outfile, 'w') as f:
+            f.write(text)
+    return text
 
 def expand_in_text( text, filedir ):
+    dir2search = [filedir, os.path.join(filedir, '..')]
+    replaceDict = {}
     for m in re.finditer( r'\.?\/(\S+?\.\w+)', text ):
-        path = os.path.join( filedir, m.group(1) )
-        # replace it with absolute path.
-        if os.path.isfile( path ):
-            text = text.replace( m.group(0), path )
+        # The file could be in same directory of one spep up.
+        for dirname in dir2search:
+            path = os.path.join( dirname, m.group(1) )
+            # replace it with absolute path.
+            if os.path.isfile( path ):
+                replaceDict[m.span()] = path
+                break
         else:
-            print('x', path )
+            # This file does not exists or most likely it is not a file in first
+            # place.
+            pass
+
+    newText = [ ]
+    end = 0
+    for a, b in replaceDict:
+        v = replaceDict[(a,b)]
+        print('x',a, b, v)
+        newText.append(text[end:a])
+        newText.append(v)
+        end = b
+    newText.append( text[end:] )
+    text = ''.join(newText)
+
     return text
 
 if __name__ == '__main__':
-    main( sys.argv[1] )
+    outfile = None
+    if len(sys.argv) > 2:
+        outfile = sys.argv[2]
+    text = main(sys.argv[1], outfile)
+    print(text)

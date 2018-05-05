@@ -59,11 +59,11 @@ def gen_standalone( code, dest ):
     if r'\end{document}' not in code:
         tex += [ '\\end{document}']
 
-
-    # Write file
-    texText =  expand_file_name.expand_in_text( '\n'.join(tex), '..' )
-    with open( texFile, 'w' ) as f:
-        f.write( texText )
+    # Write file, sniff and replace the filepath with absolutes and write again.
+    texText = '\n'.join(tex)
+    with open(texFile, 'w') as f:
+        f.write(texText)
+    expand_file_name.main(texFile, texFile)
 
     print1('[INFO] Wrote standalone file: %s' % texFile)
     res1 = subprocess.check_output( 
