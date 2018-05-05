@@ -66,16 +66,14 @@ def gen_standalone( code, dest ):
     expand_file_name.main(texFile, texFile)
 
     print1('[INFO] Wrote standalone file: %s' % texFile)
-    res1 = helper.run('lualatex -shell-escape %s' % texFile)
+    res1 = helper.run('lualatex -shell-escape -interaction=nonstopmode %s' % texFile, cwd = dirname)
 
     if ext != 'pdf':
         pdfFile = os.path.join( dirname, nameWE + '.pdf' )
         outfile = os.path.join( dirname, nameWE + '.%s' % ext )
         print1( pdfFile, outfile )
         opts = '-density 300 -antialias -quality 100'
-        res = helper.run( 'convert %s %s %s' %(pdfFile, opts, outfile)
-                , cwd=dirname
-                )
+        res = helper.run( 'convert %s %s %s'%(pdfFile, opts, outfile), cwd = dirname)
     assert os.path.isfile( dest ), "%s could not be generated." % dest
     
 

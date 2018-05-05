@@ -34,8 +34,10 @@ def expand_in_text( text, filedir ):
         # The file could be in same directory of one spep up.
         for dirname in dir2search:
             path = os.path.join( dirname, m.group(1) )
+            print( 'x Replacing %s with %s' % (m.group(1), path))
             # replace it with absolute path.
             if os.path.isfile( path ):
+                #  print('Found')
                 replaceDict[m.span()] = path
                 break
         else:
@@ -46,15 +48,13 @@ def expand_in_text( text, filedir ):
     newText = [ ]
     end = 0
     for a, b in replaceDict:
+        #  print( 'x',a,b)
         v = replaceDict[(a,b)]
-        print('x',a, b, v)
         newText.append(text[end:a])
         newText.append(v)
         end = b
     newText.append( text[end:] )
-    text = ''.join(newText)
-
-    return text
+    return ''.join(newText)
 
 if __name__ == '__main__':
     outfile = None
