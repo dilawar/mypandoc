@@ -19,20 +19,14 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-PANDOC_FILTERS=""
-PANDOC_FILTERS="$PANDOC_FILTERS -F $SCRIPT_DIR/pandoc/dilawar.py "
 # Order of filters are important.
-if which pantable > /dev/null; then
-    PANDOC_FILTERS="$PANDOC_FILTERS -F pantable"
-fi
-if which pandoc-imagine > /dev/null; then
-    PANDOC_FILTERS="$PANDOC_FILTERS -F pandoc-imagine"
-fi
-if which pandoc-crossref -v > /dev/null; then
-    PANDOC_FILTERS="$PANDOC_FILTERS -F pandoc-crossref"
-fi
-if which pandoc-citeproc -v > /dev/null; then
-    PANDOC_FILTERS="$PANDOC_FILTERS -F pandoc-citeproc"
-fi
 
+PANDOC_FILTERS=''
+for FILTER in pantable pandoc-imagine pandoc-crossref pandoc-citeproc; do
+    if [ -x "$(command -v $FILTER)" ]; then
+        PANDOC_FILTERS="$PANDOC_FILTERS -F $(which $FILTER)"
+    fi
+done
+
+PANDOC_FILTERS="$PANDOC_FILTERS -F $SCRIPT_DIR/pandoc/dilawar.py "
 echo $PANDOC_FILTERS
